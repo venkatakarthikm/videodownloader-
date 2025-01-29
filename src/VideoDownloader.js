@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import './VideoDownloader.css'
 
 const VideoDownloader = () => {
   const [url, setUrl] = useState("");
@@ -37,79 +38,63 @@ const VideoDownloader = () => {
     }
   };
 
+  
+
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial", textAlign: "center" }}>
+    <div className="video-downloader">
       <h1>Video Downloader</h1>
       <form onSubmit={handleDownload}>
-        <input
-          type="text"
-          placeholder="Enter video URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          style={{
-            width: "80%",
-            padding: "10px",
-            margin: "10px 0",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-          }}
+        <input 
+          type="text" 
+          placeholder="Enter video URL" 
+          value={url} 
+          onChange={(e) => setUrl(e.target.value)} 
           required
         />
-        <button
-          type="submit"
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#6366F1",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Download
+        <br></br><br></br><br></br>
+        <button type="submit">
+          <span className="button-text">{loading ? "Downloading..." : "Download"}</span>
+          {loading && <div className="button-spinner"></div>}
         </button>
+        <br></br>
+        <br></br>
+        <br></br><br></br>
       </form>
 
       {loading && (
-        <div style={{ marginTop: "20px" }}>
-          <div
-            style={{
-              display: "inline-block",
-              width: "40px",
-              height: "40px",
-              border: "4px solid #6366F1",
-              borderTop: "4px solid transparent",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-            }}
-          ></div>
+        
+        <div className="loading-indicator">
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <circle r="32" cy="40" cx="40" id="test"></circle>
+            </svg>
+          </div>
+          <div className="loader triangle">
+            <svg viewBox="0 0 86 80">
+              <polygon points="43 8 79 72 7 72"></polygon>
+            </svg>
+          </div>
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <rect height="64" width="64" y="8" x="8"></rect>
+            </svg>
+          </div>
           <p>Fetching video details...</p>
         </div>
       )}
 
-      {error && <p style={{ color: "red", marginTop: "20px" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {responseData && !loading && (
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
+        <div className="video-details">
           <h3>Video Details:</h3>
-          <p>
-            <strong>Title:</strong> {responseData.fulltitle}
-          </p>
-          <p>
-            <strong>Description:</strong> {responseData.description}
-          </p>
-          <p>
-            <strong>Duration:</strong> {responseData.duration_string}s
-          </p>
+          <p><strong>Title:</strong> {responseData.fulltitle}</p>
+          <p><strong>Duration:</strong> {responseData.duration_string}s</p>
           <h4>Available Formats:</h4>
           <ul>
             {responseData.formats.map((format) => (
               <li key={format.format_id}>
-                <a
-                  href={format.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={format.url} target="_blank" rel="noopener noreferrer">
                   {format.format} ({format.resolution || "Audio only"})
                 </a>
               </li>
@@ -122,13 +107,3 @@ const VideoDownloader = () => {
 };
 
 export default VideoDownloader;
-
-// CSS for spinner animation
-const style = document.createElement("style");
-style.innerHTML = `
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-`;
-document.head.appendChild(style);
