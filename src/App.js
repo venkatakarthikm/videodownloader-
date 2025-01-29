@@ -105,7 +105,7 @@ const App = () => {
     //     </div>
     //   )}
     // </div>
-    <div><VideoDownloader /></div>
+    <div className="fullscreen"><VideoDownloader /></div>
   );
 };
 
